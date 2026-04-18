@@ -15,15 +15,21 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - run: npm ci
 
       - run: npx electron-forge make --platform=darwin --arch=${{ matrix.arch }}
 
+      - name: List build output
+        run: |
+          echo "=== ZIP files ==="
+          find out -name "*.zip" -type f
+          echo "=== DMG files ==="
+          find out -name "*.dmg" -type f
+
       - uses: actions/upload-artifact@v4
         with:
           name: Songsta-mac-${{ matrix.arch }}
-          path: |
-            out/make/zip/darwin/${{ matrix.arch }}/*.zip
-            out/make/dmg/darwin/${{ matrix.arch }}/*.dmg
+          path: out/make/
+          retention-days: 30
