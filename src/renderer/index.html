@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'">
+  <title>Songsta - AI Lyric Generator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <aside class="history-panel" id="historyPanel">
+      <div class="panel-header">
+        <h2>History</h2>
+        <button class="btn-icon" id="refreshHistory" title="Refresh">↻</button>
+      </div>
+      <div class="history-list" id="historyList">
+        <p class="empty-state">No saved generations yet</p>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="app-header">
+        <h1>Songsta</h1>
+        <span class="version-badge">AI Powered</span>
+      </header>
+
+      <div class="settings-section">
+        <div class="settings-row">
+          <div class="input-group">
+            <label for="apiKey">OpenRouter API Key</label>
+            <input type="password" id="apiKey" placeholder="sk-or-v1-..." autocomplete="off">
+          </div>
+          <div class="input-group">
+            <label for="modelSelector">Model</label>
+            <select id="modelSelector" disabled>
+              <option value="">Enter API key first</option>
+            </select>
+          </div>
+        </div>
+        <div class="model-status" id="modelStatus"></div>
+      </div>
+
+      <div class="input-section">
+        <div class="options-row">
+          <div class="input-group">
+            <label for="genre">Genre</label>
+            <select id="genre">
+              <option value="pop">Pop</option>
+              <option value="rock">Rock</option>
+              <option value="punk">Punk</option>
+              <option value="rap">Rap</option>
+              <option value="edm">EDM</option>
+              <option value="ballad">Ballad</option>
+              <option value="alt-rock">Alt-Rock</option>
+              <option value="rnb">R&B</option>
+              <option value="country">Country</option>
+              <option value="metal">Metal</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="structure">Structure</label>
+            <div class="structure-input-wrapper">
+              <select id="structure">
+                <option value="standard">Standard (Verse/Pre/Chorus)</option>
+                <option value="rap">Rap (Verse/Hook)</option>
+                <option value="edm">EDM (Build/Drop)</option>
+                <option value="ballad">Ballad (Verse/Chorus/Bridge)</option>
+                <option value="custom">Custom...</option>
+              </select>
+              <input type="text" id="customStructure" class="custom-structure-input" placeholder="e.g., Verse, Chorus, Verse, Bridge, Chorus, Outro" style="display: none;">
+            </div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="additionalStyles">Additional Style Tags</label>
+          <input type="text" id="additionalStyles" placeholder="e.g., reverb-heavy, lo-fi drums, warm bass (saved locally)">
+        </div>
+
+        <div class="input-group">
+          <label for="promptInput">Lyric Prompt</label>
+          <textarea id="promptInput" rows="6" placeholder="Describe the lyrics you want. Include theme, mood, style, etc.&#10;&#10;Example: Write me some lyrics about a traveler making their way through Asia. Make it abstract and non-cliché. An allegory for the state of the world. Keep it simple."></textarea>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn-primary" id="generateBtn">Generate Lyrics</button>
+          <button class="btn-secondary" id="saveBtn" disabled>Save</button>
+        </div>
+      </div>
+
+      <div class="output-section" id="outputSection" style="display: none;">
+        <div class="output-blocks">
+          <div class="output-block" id="styleBlock">
+            <div class="block-header">
+              <div>
+                <h3>Style Prompt</h3>
+                <span class="help-note">Paste into Suno's "Style of Music" field</span>
+              </div>
+              <button class="btn-copy" data-block="style">Copy</button>
+            </div>
+            <pre id="styleContent"></pre>
+          </div>
+
+          <div class="output-block" id="lyricsBlock">
+            <div class="block-header">
+              <div>
+                <h3>Generated Lyrics</h3>
+                <span class="help-note">Paste into Suno's "Lyrics" field</span>
+              </div>
+              <button class="btn-copy" data-block="lyrics">Copy</button>
+            </div>
+            <pre id="lyricsContent"></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="loading-state" id="loadingState" style="display: none;">
+        <div class="spinner"></div>
+        <p>Generating lyrics...</p>
+      </div>
+
+      <div class="error-state" id="errorState" style="display: none;">
+        <p id="errorMessage"></p>
+      </div>
+
+      <div class="empty-output" id="emptyOutput">
+        <p>Enter your OpenRouter API key, select genre and structure, describe the lyrics you want, and click Generate</p>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="renameModal" style="display: none;">
+    <div class="modal">
+      <h3>Rename Generation</h3>
+      <input type="text" id="renameInput" placeholder="Enter new name...">
+      <div class="modal-actions">
+        <button class="btn-secondary" id="renameCancel">Cancel</button>
+        <button class="btn-primary" id="renameConfirm">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
